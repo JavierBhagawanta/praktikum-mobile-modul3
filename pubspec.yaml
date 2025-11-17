@@ -33,6 +33,12 @@ dependencies:
   get: ^4.6.6       # Untuk GetX
   http: ^1.2.1      # Untuk API call (Tugas 1)
   dio: ^5.4.3       # Untuk API call (Tugas 1)
+  shared_preferences: ^2.2.2  # Untuk menyimpan tema dark/light
+  hive: ^2.2.3      # Untuk local storage
+  hive_flutter: ^1.1.0  # Untuk Hive dengan Flutter
+  supabase_flutter: ^2.5.6  # Untuk Supabase (auth & database)
+  flutter_dotenv: ^5.1.0  # Untuk membaca file .env
+  uuid: ^4.0.0      # Untuk generate unique ID
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -41,6 +47,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  hive_generator: ^2.0.1  # Untuk generate Hive adapter
+  build_runner: ^2.4.8    # Untuk menjalankan code generation
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -61,9 +69,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

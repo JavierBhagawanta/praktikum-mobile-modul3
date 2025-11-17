@@ -1,0 +1,77 @@
+import 'package:uuid/uuid.dart';
+
+class HiveCarModel {
+  String id;
+  String namaMobil;
+  String tipeMobil;
+  String gambarUrl;
+  int hargaSewa;
+  String driverId;
+  DateTime savedAt;
+
+  HiveCarModel({
+    String? id,
+    required this.namaMobil,
+    required this.tipeMobil,
+    required this.gambarUrl,
+    required this.hargaSewa,
+    required this.driverId,
+    required this.savedAt,
+  }) : id = id?.isEmpty ?? true ? const Uuid().v4() : id!;
+
+  // Convert dari CarModel ke HiveCarModel
+  factory HiveCarModel.fromCarModel(dynamic carModel) {
+    return HiveCarModel(
+      id: carModel.id,
+      namaMobil: carModel.namaMobil,
+      tipeMobil: carModel.tipeMobil,
+      gambarUrl: carModel.gambarUrl,
+      hargaSewa: carModel.hargaSewa,
+      driverId: carModel.driverId,
+      savedAt: DateTime.now(),
+    );
+  }
+
+  // Convert ke Map untuk Hive storage
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'namaMobil': namaMobil,
+      'tipeMobil': tipeMobil,
+      'gambarUrl': gambarUrl,
+      'hargaSewa': hargaSewa,
+      'driverId': driverId,
+      'savedAt': savedAt.toIso8601String(),
+    };
+  }
+
+  // Convert dari Map
+  factory HiveCarModel.fromMap(Map<String, dynamic> map) {
+    // Generate ID baru jika kosong atau null
+    final id = (map['id'] ?? '').isEmpty ? const Uuid().v4() : map['id'];
+    
+    return HiveCarModel(
+      id: id,
+      namaMobil: map['namaMobil'] ?? '',
+      tipeMobil: map['tipeMobil'] ?? '',
+      gambarUrl: map['gambarUrl'] ?? '',
+      hargaSewa: map['hargaSewa'] ?? 0,
+      driverId: map['driverId'] ?? '',
+      savedAt: DateTime.parse(map['savedAt'] ?? DateTime.now().toIso8601String()),
+    );
+  }
+
+  // Convert ke Map untuk Supabase
+  Map<String, dynamic> toSupabaseMap() {
+    return {
+      'id': id,
+      'nama_mobil': namaMobil,
+      'tipe_mobil': tipeMobil,
+      'gambar_url': gambarUrl,
+      'harga_sewa': hargaSewa,
+      'driver_id': driverId,
+      'saved_at': savedAt.toIso8601String(),
+    };
+  }
+}
+
