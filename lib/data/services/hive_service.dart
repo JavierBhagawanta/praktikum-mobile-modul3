@@ -29,13 +29,37 @@ class HiveService extends GetxService {
     }
   }
 
+  // Check if car already exists
+  bool carExists(String carId) {
+    try {
+      return _box?.containsKey(carId) ?? false;
+    } catch (e) {
+      debugPrint('Error checking car existence: $e');
+      return false;
+    }
+  }
+
   // Save car to local storage
   Future<void> saveCar(HiveCarModel car) async {
     try {
+      // Check if car already exists
+      if (carExists(car.id)) {
+        throw Exception('Car already saved in local storage');
+      }
+      
+      // Save ke Hive
       await _box?.put(car.id, car.toMap());
-      Get.snackbar('Success', 'Car saved to local storage');
+      
+      // Verify bahwa data benar-benar tersimpan
+      final saved = _box?.get(car.id);
+      if (saved == null) {
+        throw Exception('Failed to verify car was saved');
+      }
+      
+      debugPrint('Car saved to local storage: ${car.namaMobil} (ID: ${car.id})');
+      debugPrint('Total cars in Hive: ${_box?.length ?? 0}');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to save car: $e');
+      debugPrint('Failed to save car: $e');
       rethrow;
     }
   }

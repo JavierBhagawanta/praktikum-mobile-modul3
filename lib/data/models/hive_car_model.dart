@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 class HiveCarModel {
   String id;
   String namaMobil;
@@ -8,14 +10,14 @@ class HiveCarModel {
   DateTime savedAt;
 
   HiveCarModel({
-    required this.id,
+    String? id,
     required this.namaMobil,
     required this.tipeMobil,
     required this.gambarUrl,
     required this.hargaSewa,
     required this.driverId,
     required this.savedAt,
-  });
+  }) : id = id?.isEmpty ?? true ? const Uuid().v4() : id!;
 
   // Convert dari CarModel ke HiveCarModel
   factory HiveCarModel.fromCarModel(dynamic carModel) {
@@ -45,8 +47,11 @@ class HiveCarModel {
 
   // Convert dari Map
   factory HiveCarModel.fromMap(Map<String, dynamic> map) {
+    // Generate ID baru jika kosong atau null
+    final id = (map['id'] ?? '').isEmpty ? const Uuid().v4() : map['id'];
+    
     return HiveCarModel(
-      id: map['id'] ?? '',
+      id: id,
       namaMobil: map['namaMobil'] ?? '',
       tipeMobil: map['tipeMobil'] ?? '',
       gambarUrl: map['gambarUrl'] ?? '',
