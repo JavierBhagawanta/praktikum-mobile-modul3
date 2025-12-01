@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'settings_controller.dart';
 import '../../../app/controllers/theme_controller.dart';
+import '../../../lokasi/views/home_view.dart' as lokasi_view;
 
 class SettingsView extends GetView<SettingsController> {
   const SettingsView({super.key});
@@ -11,10 +12,7 @@ class SettingsView extends GetView<SettingsController> {
     final themeController = Get.find<ThemeController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Settings'), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
@@ -27,23 +25,24 @@ class SettingsView extends GetView<SettingsController> {
                 children: [
                   const Text(
                     'Theme Settings',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  Obx(() => SwitchListTile(
-                    title: const Text('Dark Mode'),
-                    subtitle: const Text('Toggle between dark and light theme'),
-                    value: themeController.isDarkMode,
-                    onChanged: (value) => controller.toggleTheme(),
-                    secondary: Icon(
-                      themeController.isDarkMode
-                          ? Icons.dark_mode
-                          : Icons.light_mode,
+                  Obx(
+                    () => SwitchListTile(
+                      title: const Text('Dark Mode'),
+                      subtitle: const Text(
+                        'Toggle between dark and light theme',
+                      ),
+                      value: themeController.isDarkMode,
+                      onChanged: (value) => controller.toggleTheme(),
+                      secondary: Icon(
+                        themeController.isDarkMode
+                            ? Icons.dark_mode
+                            : Icons.light_mode,
+                      ),
                     ),
-                  )),
+                  ),
                 ],
               ),
             ),
@@ -59,23 +58,27 @@ class SettingsView extends GetView<SettingsController> {
                 children: [
                   const Text(
                     'Local Storage (Hive)',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  Obx(() => ListTile(
-                    leading: const Icon(Icons.storage),
-                    title: const Text('Cars in Local Storage'),
-                    subtitle: Text('${controller.localCarCount.value} cars saved'),
-                  )),
+                  Obx(
+                    () => ListTile(
+                      leading: const Icon(Icons.storage),
+                      title: const Text('Cars in Local Storage'),
+                      subtitle: Text(
+                        '${controller.localCarCount.value} cars saved',
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   ElevatedButton.icon(
                     onPressed: () {
                       final cars = controller.getLocalCars();
                       if (cars.isEmpty) {
-                        Get.snackbar('Info', 'Tidak ada mobil yang disimpan di local storage');
+                        Get.snackbar(
+                          'Info',
+                          'Tidak ada mobil yang disimpan di local storage',
+                        );
                         return;
                       }
                       Get.dialog(
@@ -89,17 +92,23 @@ class SettingsView extends GetView<SettingsController> {
                               itemBuilder: (context, index) {
                                 final car = cars[index];
                                 return Card(
-                                  margin: const EdgeInsets.symmetric(vertical: 4),
+                                  margin: const EdgeInsets.symmetric(
+                                    vertical: 4,
+                                  ),
                                   child: ListTile(
                                     leading: const Icon(Icons.directions_car),
                                     title: Text(car.namaMobil),
                                     subtitle: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(car.tipeMobil),
                                         Text(
                                           'Disimpan: ${_formatDate(car.savedAt)}',
-                                          style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -108,15 +117,24 @@ class SettingsView extends GetView<SettingsController> {
                                       children: [
                                         Text(
                                           'Rp ${car.hargaSewa}',
-                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                         IconButton(
-                                          icon: const Icon(Icons.delete, color: Colors.red),
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ),
                                           onPressed: () {
                                             Get.dialog(
                                               AlertDialog(
-                                                title: const Text('Hapus Mobil?'),
-                                                content: Text('Hapus ${car.namaMobil} dari local storage?'),
+                                                title: const Text(
+                                                  'Hapus Mobil?',
+                                                ),
+                                                content: Text(
+                                                  'Hapus ${car.namaMobil} dari local storage?',
+                                                ),
                                                 actions: [
                                                   TextButton(
                                                     onPressed: () => Get.back(),
@@ -124,19 +142,30 @@ class SettingsView extends GetView<SettingsController> {
                                                   ),
                                                   TextButton(
                                                     onPressed: () async {
-                                                      await controller.deleteCarFromLocal(car.id);
+                                                      await controller
+                                                          .deleteCarFromLocal(
+                                                            car.id,
+                                                          );
                                                       Get.back();
                                                       // Refresh dialog
-                                                      final updatedCars = controller.getLocalCars();
+                                                      final updatedCars =
+                                                          controller
+                                                              .getLocalCars();
                                                       if (updatedCars.isEmpty) {
                                                         Get.back(); // Close dialog jika sudah kosong
                                                       } else {
                                                         // Rebuild dialog dengan data baru
                                                         Get.back();
-                                                        controller.updateLocalCarCount();
+                                                        controller
+                                                            .updateLocalCarCount();
                                                       }
                                                     },
-                                                    child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+                                                    child: const Text(
+                                                      'Hapus',
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -181,7 +210,10 @@ class SettingsView extends GetView<SettingsController> {
                                 controller.clearLocalStorage();
                                 Get.back();
                               },
-                              child: const Text('Clear', style: TextStyle(color: Colors.red)),
+                              child: const Text(
+                                'Clear',
+                                style: TextStyle(color: Colors.red),
+                              ),
                             ),
                           ],
                         ),
@@ -195,6 +227,16 @@ class SettingsView extends GetView<SettingsController> {
             ),
           ),
           const SizedBox(height: 16),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.location_on, color: Colors.indigo),
+              title: const Text('Lokasi (Map)'),
+              subtitle: const Text('Lihat & akses halaman lokasi'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () => Get.to(() => lokasi_view.HomeView()),
+            ),
+          ),
+          const SizedBox(height: 16),
 
           // Cloud Storage (Supabase) Section
           Card(
@@ -205,29 +247,28 @@ class SettingsView extends GetView<SettingsController> {
                 children: [
                   const Text(
                     'Cloud Storage (Supabase)',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  Obx(() => ListTile(
-                    leading: const Icon(Icons.cloud),
-                    title: const Text('Authentication Status'),
-                    subtitle: Text(
-                      controller.isAuthenticated.value
-                          ? 'Signed in as: ${controller.currentUserEmail.value.isEmpty ? "Unknown" : controller.currentUserEmail.value}'
-                          : 'Not signed in',
+                  Obx(
+                    () => ListTile(
+                      leading: const Icon(Icons.cloud),
+                      title: const Text('Authentication Status'),
+                      subtitle: Text(
+                        controller.isAuthenticated.value
+                            ? 'Signed in as: ${controller.currentUserEmail.value.isEmpty ? "Unknown" : controller.currentUserEmail.value}'
+                            : 'Not signed in',
+                      ),
+                      trailing: Icon(
+                        controller.isAuthenticated.value
+                            ? Icons.check_circle
+                            : Icons.cancel,
+                        color: controller.isAuthenticated.value
+                            ? Colors.green
+                            : Colors.red,
+                      ),
                     ),
-                    trailing: Icon(
-                      controller.isAuthenticated.value
-                          ? Icons.check_circle
-                          : Icons.cancel,
-                      color: controller.isAuthenticated.value
-                          ? Colors.green
-                          : Colors.red,
-                    ),
-                  )),
+                  ),
                   const SizedBox(height: 8),
                   Obx(() {
                     if (controller.isAuthenticated.value) {
@@ -235,42 +276,57 @@ class SettingsView extends GetView<SettingsController> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: () => controller.signOut(),
+                            onPressed: () async {
+                              await controller.signOut();
+                              Get.offAllNamed('/login');
+                            },
                             icon: const Icon(Icons.logout),
                             label: const Text('Sign Out'),
                           ),
                           const SizedBox(height: 8),
-                          Obx(() => ElevatedButton.icon(
-                            onPressed: controller.isSyncing.value
-                                ? null
-                                : () => controller.syncToCloud(),
-                            icon: controller.isSyncing.value
-                                ? const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  )
-                                : const Icon(Icons.cloud_upload),
-                            label: Text(controller.isSyncing.value
-                                ? 'Syncing...'
-                                : 'Sync to Cloud'),
-                          )),
+                          Obx(
+                            () => ElevatedButton.icon(
+                              onPressed: controller.isSyncing.value
+                                  ? null
+                                  : () => controller.syncToCloud(),
+                              icon: controller.isSyncing.value
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(Icons.cloud_upload),
+                              label: Text(
+                                controller.isSyncing.value
+                                    ? 'Syncing...'
+                                    : 'Sync to Cloud',
+                              ),
+                            ),
+                          ),
                           const SizedBox(height: 8),
-                    Obx(() => OutlinedButton.icon(
-                      onPressed: controller.isLoading.value
-                          ? null
-                          : () => _showCloudCarsDialog(context),
-                      icon: controller.isLoading.value
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.cloud_download),
-                      label: Text(controller.isLoading.value
-                          ? 'Loading...'
-                          : 'View Cloud Cars'),
-                    )),
+                          Obx(
+                            () => OutlinedButton.icon(
+                              onPressed: controller.isLoading.value
+                                  ? null
+                                  : () => _showCloudCarsDialog(context),
+                              icon: controller.isLoading.value
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(Icons.cloud_download),
+                              label: Text(
+                                controller.isLoading.value
+                                    ? 'Loading...'
+                                    : 'View Cloud Cars',
+                              ),
+                            ),
+                          ),
                         ],
                       );
                     } else {
@@ -337,30 +393,29 @@ class SettingsView extends GetView<SettingsController> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          Obx(
+            () => ElevatedButton(
+              onPressed: controller.isLoading.value
+                  ? null
+                  : () async {
+                      await controller.signIn(
+                        emailController.text,
+                        passwordController.text,
+                      );
+                      if (controller.isAuthenticated.value) {
+                        Get.back();
+                      }
+                    },
+              child: controller.isLoading.value
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Sign In'),
+            ),
           ),
-          Obx(() => ElevatedButton(
-            onPressed: controller.isLoading.value
-                ? null
-                : () async {
-                    await controller.signIn(
-                      emailController.text,
-                      passwordController.text,
-                    );
-                    if (controller.isAuthenticated.value) {
-                      Get.back();
-                    }
-                  },
-            child: controller.isLoading.value
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Sign In'),
-          )),
         ],
       ),
     );
@@ -402,30 +457,29 @@ class SettingsView extends GetView<SettingsController> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          Obx(
+            () => ElevatedButton(
+              onPressed: controller.isLoading.value
+                  ? null
+                  : () async {
+                      await controller.signUp(
+                        emailController.text,
+                        passwordController.text,
+                      );
+                      if (controller.isAuthenticated.value) {
+                        Get.back();
+                      }
+                    },
+              child: controller.isLoading.value
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Sign Up'),
+            ),
           ),
-          Obx(() => ElevatedButton(
-            onPressed: controller.isLoading.value
-                ? null
-                : () async {
-                    await controller.signUp(
-                      emailController.text,
-                      passwordController.text,
-                    );
-                    if (controller.isAuthenticated.value) {
-                      Get.back();
-                    }
-                  },
-            child: controller.isLoading.value
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Sign Up'),
-          )),
         ],
       ),
     );
@@ -440,12 +494,12 @@ class SettingsView extends GetView<SettingsController> {
   Future<void> _showCloudCarsDialog(BuildContext context) async {
     try {
       final cars = await controller.fetchFromCloud();
-      
+
       if (cars.isEmpty) {
         Get.snackbar('Info', 'No cars found in cloud storage');
         return;
       }
-      
+
       // Tampilkan dialog dengan list cars dari cloud
       Get.dialog(
         AlertDialog(
@@ -469,7 +523,10 @@ class SettingsView extends GetView<SettingsController> {
                         if (car['saved_at'] != null)
                           Text(
                             'Saved: ${_formatDate(DateTime.parse(car['saved_at']))}',
-                            style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
                           ),
                       ],
                     ),
@@ -483,10 +540,7 @@ class SettingsView extends GetView<SettingsController> {
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Get.back(),
-              child: const Text('Close'),
-            ),
+            TextButton(onPressed: () => Get.back(), child: const Text('Close')),
           ],
         ),
       );
@@ -495,4 +549,3 @@ class SettingsView extends GetView<SettingsController> {
     }
   }
 }
-

@@ -5,13 +5,16 @@ import '../modules/home/home_binding.dart';
 import '../modules/home/home_view.dart';
 import '../modules/settings/settings_binding.dart';
 import '../modules/settings/settings_view.dart';
+import '../modules/login_binding.dart';
+import '../modules/login_view.dart';
+import '../../lokasi/views/home_view.dart' as lokasi_view;
 
 part 'app_routes.dart';
 
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.HOME;
+  static const INITIAL = Routes.LOGIN;
 
   static final routes = [
     GetPage(
@@ -29,5 +32,11 @@ class AppPages {
       page: () => const SettingsView(),
       binding: SettingsBinding(),
     ),
+    GetPage(
+      name: _Paths.LOGIN,
+      page: () => const LoginView(),
+      binding: LoginBinding(),
+    ),
+    GetPage(name: '/location', page: () => const lokasi_view.HomeView()),
   ];
 }
