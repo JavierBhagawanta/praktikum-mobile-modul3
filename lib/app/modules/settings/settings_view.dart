@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'settings_controller.dart';
 import '../../../app/controllers/theme_controller.dart';
+import '../../../lokasi/views/home_view.dart' as lokasi_view;
 
 class SettingsView extends GetView<SettingsController> {
   const SettingsView({super.key});
@@ -223,6 +224,16 @@ class SettingsView extends GetView<SettingsController> {
                   ),
                 ],
               ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.location_on, color: Colors.indigo),
+              title: const Text('Lokasi (Map)'),
+              subtitle: const Text('Lihat & akses halaman lokasi'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () => Get.to(() => lokasi_view.HomeView()),
             ),
           ),
           const SizedBox(height: 16),
